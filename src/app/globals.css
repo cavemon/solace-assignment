@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.header {
+    border-bottom: 1px solid #ccc;
+    display: flex;
+    padding-bottom: 2rem;
+}
+
+.header__logo {
+    max-width: 250px;
+}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Header from "@/components/header";
 
 export default function Home() {
   const [advocates, setAdvocates] = useState([]);
@@ -43,7 +44,7 @@ export default function Home() {
 
   return (
     <main style={{ margin: "24px" }}>
-      <h1>Solace Advocates</h1>
+      <Header />
       <br />
       <br />
       <div>
