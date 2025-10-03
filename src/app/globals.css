@@ -1,3 +1,94 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.header {
+    border-bottom: 1px solid #ccc;
+    display: flex;
+    padding-bottom: 2rem;
+}
+
+.header__logo {
+    max-width: 250px;
+}
+
+.search-form {}
+
+.search-form__heading {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.search-form input[type="text"] {
+    border-radius: 10px;
+    padding: .75rem 2rem;
+}
+
+.search-form input[type="text"]:focus {
+    box-shadow: 0 0 15px #d4e2dd;
+    outline: none;
+}
+
+.search-form__submit {
+    background-color: #285e50;
+    border-radius: 10px;
+    color: #fff;
+    padding: .75rem 2rem;
+}
+
+.search-form__submit:hover,
+.search-form__submit:active,
+.search-form__submit:focus {
+    background-color: #1d4339;
+}
+
+.search-form__reset {
+    border-bottom: 2px solid #000;
+    font-weight: 700;
+    margin-right: 0.5rem;
+    margin-top: 1rem;
+}
+
+.search-form__term {
+    padding: 1rem 0;
+}
+
+.results-table {
+    border-radius: 10px;
+    overflow: hidden;
+    width: 100%;
+}
+
+.results-table th,
+.results-table td {
+    padding: 1rem;
+}
+
+.results-table thead {
+    background-color: #285e50;
+    color: #fff;
+    font-size: .75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.results-table thead th {
+    text-align: left;
+    vertical-align: bottom;
+}
+
+.results-table tbody {}
+
+.results-table tbody tr {}
+
+.results-table tbody  tr:nth-child(odd) {
+    background-color: #f2f2f2;
+}
+
+.results-table tbody tr:hover {
+    background-color: #f4f8f7;
+}
+
+.results-table tbody tr td {
+    vertical-align: top;
+}
