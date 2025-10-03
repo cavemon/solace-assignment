@@ -1,44 +1,59 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import {useEffect, useRef, useState} from "react";
 import Header from "@/components/header";
 
 export default function Home() {
   const [advocates, setAdvocates] = useState([]);
   const [filteredAdvocates, setFilteredAdvocates] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const searchInputRef = useRef(null);
+  const isFiltered = useRef(false);
 
   useEffect(() => {
     console.log("fetching advocates...");
-    fetch("/api/advocates").then((response) => {
-      response.json().then((jsonResponse) => {
-        setAdvocates(jsonResponse.data);
-        setFilteredAdvocates(jsonResponse.data);
-      });
-    });
+    getInitialResults();
   }, []);
 
-  const onChange = (e) => {
-    const searchTerm = e.target.value;
+  const getInitialResults = () => {
+    if (advocates.length) {
+      setFilteredAdvocates(advocates);
+    } else {
+      fetch("/api/advocates").then((response) => {
+        response.json().then((jsonResponse) => {
+          setAdvocates(jsonResponse.data);
+          setFilteredAdvocates(jsonResponse.data);
+        });
+      });
+    }
+  }
 
-    document.getElementById("search-term").innerHTML = searchTerm;
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const search = formData.get('search');
 
-    console.log("filtering advocates...");
-    const filteredAdvocates = advocates.filter((advocate) => {
-      return (
-        advocate.firstName.includes(searchTerm) ||
-        advocate.lastName.includes(searchTerm) ||
-        advocate.city.includes(searchTerm) ||
-        advocate.degree.includes(searchTerm) ||
-        advocate.specialties.includes(searchTerm) ||
-        advocate.yearsOfExperience.includes(searchTerm)
-      );
+    if (!search) {
+      getInitialResults();
+    } else {
+      await handleSearch(search);
+    }
+  }
+
+  const handleSearch = async (term: FormDataEntryValue|null) =>{
+    const results = await fetch(`/api/search/${term}`).then((response) => {
+      response.json().then((jsonResponse) => {
+        setFilteredAdvocates(jsonResponse.data);
+        setSearchTerm(term);
+        isFiltered.current = true;
+      });
     });
+  }
 
-    setFilteredAdvocates(filteredAdvocates);
-  };
-
-  const onClick = () => {
-    console.log(advocates);
+  const handleReset = () => {
+    searchInputRef.current.value = '';
+    isFiltered.current = false;
+    setSearchTerm('');
     setFilteredAdvocates(advocates);
   };
 
@@ -48,16 +63,34 @@ export default function Home() {
       <br />
       <br />
       <div>
-        <p>Search</p>
-        <p>
-          Searching for: <span id="search-term"></span>
-        </p>
-        <input style={{ border: "1px solid black" }} onChange={onChange} />
-        <button onClick={onClick}>Reset Search</button>
+        <form onSubmit={handleSubmit} className="search-form">
+          <h2 className="search-form__heading">Search</h2>
+          <div className="flex justify-between">
+            <div>
+              <label htmlFor="searchInput" className="sr-only">Search</label>
+              <input id="searchInput" ref={searchInputRef} style={{ border: "1px solid black" }} name="search" type="text" />
+            </div>
+            <button type="submit" className="search-form__submit">Submit</button>
+
+          </div>
+          <div className="flex justify-between">
+            {searchTerm && (
+              <p className="search-form__term">
+                Searching for: <span id="search-term">{searchTerm}</span>
+              </p>
+            )}
+            <div>
+              {isFiltered.current && (
+                <button onClick={handleReset} className="search-form__reset">Reset Search</button>
+              )}
+            </div>
+          </div>
+
+        </form>
       </div>
       <br />
       <br />
-      <table>
+      <table className="results-table">
         <thead>
           <tr>
               <th>First Name</th>
